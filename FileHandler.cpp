@@ -248,6 +248,13 @@ HandlerResult FileHandler::handleDelete(Connection& conn) {
     return HR_DONE;
   }
 
+  // Only allow DELETE for regular files
+  if (!S_ISREG(st.st_mode)) {
+    LOG(INFO) << "FileHandler: DELETE not allowed for non-regular file: " << path_;
+    conn.prepareErrorResponse(http::S_403_FORBIDDEN);
+    return HR_DONE;
+  }
+
   // Try to delete the file
   if (unlink(path_.c_str()) != 0) {
     LOG_PERROR(ERROR, "FileHandler: Failed to delete file");
