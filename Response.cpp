@@ -1,6 +1,6 @@
 #include "Response.hpp"
 
-Response::Response() : Message(), status_line() {}
+Response::Response() {}
 
 Response::Response(const Response& other)
     : Message(other), status_line(other.status_line) {}

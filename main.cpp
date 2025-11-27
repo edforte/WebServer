@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
   // 0 = DEBUG, 1 = INFO, 2 = ERROR
 
   std::string path;
-  int logLevel;
+  int logLevel = 0;
 
   // collect path and log level from argv
   try {
@@ -29,9 +29,9 @@ int main(int argc, char** argv) {
 
   Logger::setLevel(static_cast<Logger::LogLevel>(logLevel));
 
-  ServerManager sm;
+  ServerManager server_manager;
   try {
-    sm.setupSignalHandlers();
+    server_manager.setupSignalHandlers();
 
     Config cfg;
     cfg.parseFile(std::string(path));
@@ -40,10 +40,10 @@ int main(int argc, char** argv) {
     cfg.debug();
 
     std::vector<Server> servers = cfg.getServers();
-    sm.initServers(servers);
+    server_manager.initServers(servers);
     LOG(INFO) << "All servers initialized and ready to accept connections";
 
-    return sm.run();
+    return server_manager.run();
   } catch (...) {
     return EXIT_FAILURE;
   }

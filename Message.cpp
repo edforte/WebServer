@@ -7,16 +7,18 @@
 #include "utils.hpp"
 
 namespace {
-bool ci_equal_copy(const std::string& a, const std::string& b) {
-  if (a.size() != b.size()) {
+bool ci_equal_copy(const std::string& str_a, const std::string& str_b) {
+  if (str_a.size() != str_b.size()) {
     return false;
   }
-  for (std::string::size_type i = 0; i < a.size(); ++i) {
-    char ca = a[i];
-    char cb = b[i];
-    ca = static_cast<char>(std::tolower(static_cast<unsigned char>(ca)));
-    cb = static_cast<char>(std::tolower(static_cast<unsigned char>(cb)));
-    if (ca != cb) {
+  for (std::string::size_type i = 0; i < str_a.size(); ++i) {
+    char char_a = str_a[i];
+    char char_b = str_b[i];
+    char_a =
+        static_cast<char>(std::tolower(static_cast<unsigned char>(char_a)));
+    char_b =
+        static_cast<char>(std::tolower(static_cast<unsigned char>(char_b)));
+    if (char_a != char_b) {
       return false;
     }
   }
@@ -25,7 +27,7 @@ bool ci_equal_copy(const std::string& a, const std::string& b) {
 }  // namespace
 
 /* Message */
-Message::Message() : headers(), body() {}
+Message::Message() {}
 
 Message::Message(const Message& other)
     : headers(other.headers), body(other.body) {}
@@ -66,8 +68,8 @@ std::vector<std::string> Message::getHeaders(const std::string& name) const {
   return res;
 }
 
-void Message::setBody(const Body& b) {
-  body = b;
+void Message::setBody(const Body& body_obj) {
+  body = body_obj;
 }
 
 Body& Message::getBody() {
@@ -79,12 +81,12 @@ const Body& Message::getBody() const {
 }
 
 std::string Message::serializeHeaders() const {
-  std::ostringstream o;
+  std::ostringstream output;
   for (std::vector<Header>::const_iterator it = headers.begin();
        it != headers.end(); ++it) {
-    o << it->name << ": " << it->value << CRLF;
+    output << it->name << ": " << it->value << CRLF;
   }
-  return o.str();
+  return output.str();
 }
 
 bool Message::parseHeaderLine(const std::string& line, Header& out) {
@@ -98,25 +100,25 @@ bool Message::parseHeaderLine(const std::string& line, Header& out) {
 }
 
 std::string Message::serialize() const {
-  std::ostringstream o;
-  o << startLine() << CRLF;
-  o << serializeHeaders();
-  o << CRLF;
-  o << body.data;
-  return o.str();
+  std::ostringstream output;
+  output << startLine() << CRLF;
+  output << serializeHeaders();
+  output << CRLF;
+  output << body.data;
+  return output.str();
 }
 
 std::size_t Message::parseHeaders(const std::vector<std::string>& lines,
                                   std::size_t start) {
   std::size_t count = 0;
   for (std::vector<std::string>::size_type i = start; i < lines.size(); ++i) {
-    const std::string& ln = lines[i];
-    if (ln.empty()) {
+    const std::string& line = lines[i];
+    if (line.empty()) {
       continue;
     }
-    Header h;
-    if (parseHeaderLine(ln, h)) {
-      headers.push_back(h);
+    Header header;
+    if (parseHeaderLine(line, header)) {
+      headers.push_back(header);
       ++count;
     }
   }

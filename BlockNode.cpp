@@ -1,9 +1,9 @@
 #include "BlockNode.hpp"
 
-BlockNode::BlockNode() : type(), param(), directives(), sub_blocks() {}
+BlockNode::BlockNode() {}
 
-BlockNode::BlockNode(const std::string& t, const std::string& p)
-    : type(t), param(p), directives(), sub_blocks() {}
+BlockNode::BlockNode(const std::string& type_str, const std::string& param_str)
+    : type(type_str), param(param_str) {}
 
 BlockNode::BlockNode(const BlockNode& other)
     : type(other.type),

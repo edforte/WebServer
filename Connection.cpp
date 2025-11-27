@@ -29,8 +29,8 @@ Connection::Connection()
       response(),
       active_handler(NULL) {}
 
-Connection::Connection(int fd)
-    : fd(fd),
+Connection::Connection(int file_descriptor)
+    : fd(file_descriptor),
       server_fd(-1),
       write_offset(0),
       headers_end_pos(std::string::npos),
@@ -72,12 +72,12 @@ Connection& Connection::operator=(const Connection& other) {
 }
 
 int Connection::handleRead() {
-  while (1) {
+  while (true) {
     char buf[WRITE_BUF_SIZE] = {0};
 
-    ssize_t r = recv(fd, buf, sizeof(buf), 0);
+    ssize_t bytes_read = recv(fd, buf, sizeof(buf), 0);
 
-    if (r < 0) {
+    if (bytes_read < 0) {
       if (errno == EAGAIN || errno == EWOULDBLOCK) {
         return 1;
       }
@@ -85,13 +85,13 @@ int Connection::handleRead() {
       return -1;
     }
 
-    if (r == 0) {
+    if (bytes_read == 0) {
       LOG(INFO) << "Client disconnected (fd: " << fd << ")";
       return -1;
     }
 
     // Add new data to persistent buffer
-    read_buffer.append(buf, r);
+    read_buffer.append(buf, static_cast<std::size_t>(bytes_read));
 
     // Check if the HTTP request headers are complete
     std::size_t pos = read_buffer.find(CRLF CRLF);
@@ -105,13 +105,13 @@ int Connection::handleRead() {
 
 int Connection::handleWrite() {
   while (write_offset < write_buffer.size()) {
-    ssize_t w =
+    ssize_t bytes_written =
         send(fd, write_buffer.c_str() + write_offset,
              static_cast<size_t>(write_buffer.size()) - write_offset, 0);
 
-    LOG(DEBUG) << "Sent " << w << " bytes to fd=" << fd;
+    LOG(DEBUG) << "Sent " << bytes_written << " bytes to fd=" << fd;
 
-    if (w < 0) {
+    if (bytes_written < 0) {
       if (errno == EAGAIN || errno == EWOULDBLOCK) {
         return 1;
       }
@@ -120,7 +120,7 @@ int Connection::handleWrite() {
       return -1;
     }
 
-    write_offset += static_cast<size_t>(w);
+    write_offset += static_cast<size_t>(bytes_written);
   }
 
   // If there's an active handler, ask it to resume (streaming, CGI, etc.)
@@ -280,7 +280,7 @@ http::Status Connection::validateRequestForLocation(const Location& location) {
   }
 
   // 2. Check HTTP method
-  http::Method method;
+  http::Method method = http::GET;
   try {
     method = http::stringToMethod(request.request_line.method);
   } catch (const std::invalid_argument&) {

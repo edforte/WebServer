@@ -17,7 +17,7 @@ class Message {
   bool getHeader(const std::string& name, std::string& out) const;
   std::vector<std::string> getHeaders(const std::string& name) const;
 
-  void setBody(const Body& b);
+  void setBody(const Body& body_obj);
   Body& getBody();
   const Body& getBody() const;
 

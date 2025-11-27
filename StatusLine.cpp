@@ -27,15 +27,15 @@ StatusLine& StatusLine::operator=(const StatusLine& other) {
 StatusLine::~StatusLine() {}
 
 std::string StatusLine::toString() const {
-  std::ostringstream o;
-  o << version << " " << status_code << " " << reason;
-  return o.str();
+  std::ostringstream output;
+  output << version << " " << status_code << " " << reason;
+  return output.str();
 }
 
 bool StatusLine::parse(const std::string& line) {
-  std::istringstream in(line);
+  std::istringstream input(line);
   int code = 0;
-  if (!(in >> version >> code)) {
+  if (!(input >> version >> code)) {
     return false;
   }
   try {
@@ -43,7 +43,7 @@ bool StatusLine::parse(const std::string& line) {
   } catch (const std::invalid_argument&) {
     return false;
   }
-  std::getline(in, reason);
+  std::getline(input, reason);
   if (!reason.empty() && reason[0] == ' ') {
     reason.erase(0, 1);
   }

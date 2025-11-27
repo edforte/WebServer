@@ -1,5 +1,24 @@
-Checks: 'readability-braces-around-statements'
-WarningsAsErrors: ''
+---
+# Run only these categories of checks (negated start then add groups).
+Checks: >
+  -*,
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  cppcoreguidelines-*,
+  portability-*
+# Don't treat any warnings as errors by default (change if desired)
+# WarningsAsErrors: ''
+
+# Apply to all headers
 HeaderFilterRegex: '.*'
+
+# Disable checks that would push code toward C++11/14/17 idioms
+# (we already excluded modernize-* by not listing it above).
+
+FormatStyle: none
+
+# Additional options can be added under CheckOptions if desired.
 CheckOptions:
   - { key: readability-braces-around-statements.MinimumLines, value: '0' }

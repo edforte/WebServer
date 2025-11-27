@@ -34,11 +34,11 @@ enum Status {
 // Convert int to Status enum; throws std::invalid_argument on unknown code
 Status intToStatus(int status);
 
-std::string reasonPhrase(Status s);
+std::string reasonPhrase(Status status);
 
 // Return a single string containing the numeric status and reason phrase,
 // e.g. "404 Not Found". Accept only the enum to avoid casts.
-std::string statusWithReason(Status s);
+std::string statusWithReason(Status status);
 
 // Classification helpers
 bool isSuccess(Status status);

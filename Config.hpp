@@ -31,7 +31,7 @@ class Config {
   std::string current_location_path_;
 
   // Parsing helpers
-  void removeComments(std::string& s);
+  static void removeComments(std::string& str);
   void tokenize(const std::string& content);
   bool eof() const;
   const std::string& peek() const;
@@ -61,9 +61,9 @@ class Config {
 
   // Argument count validators
   // Throw if directive does not have at least n arguments
-  void requireArgsAtLeast_(const DirectiveNode& d, size_t n) const;
+  void requireArgsAtLeast_(const DirectiveNode& directive, size_t num) const;
   // Throw if directive does not have exactly n arguments
-  void requireArgsEqual_(const DirectiveNode& d, size_t n) const;
+  void requireArgsEqual_(const DirectiveNode& directive, size_t num) const;
 
   // Validate that an integer status code is a 4xx or 5xx error; throws on
   // invalid
@@ -78,7 +78,7 @@ class Config {
   // Construct, log and throw a standardized message for unrecognized
   // directives. The `context` string is appended after the message
   // (e.g. "in server block" or "global directive").
-  void throwUnrecognizedDirective_(const DirectiveNode& d,
+  void throwUnrecognizedDirective_(const DirectiveNode& directive,
                                    const std::string& context) const;
 
   std::string configErrorPrefix() const;

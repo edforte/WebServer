@@ -6,11 +6,11 @@
 
 #include "HttpMethod.hpp"
 
-int set_nonblocking(int fd);
+int set_nonblocking(int file_descriptor);
 
 // Trim whitespace (space, tab, CR, LF) from both ends of a string.
 // Returns a copy with the trimmed content.
-std::string trim_copy(const std::string& s);
+std::string trim_copy(const std::string& str);
 
 // Initialize a set with the default allowed HTTP methods
 // (GET, POST, PUT, DELETE, HEAD)

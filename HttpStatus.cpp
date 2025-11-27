@@ -111,30 +111,38 @@ Status intToStatus(int status) {
   }
 }
 
-std::string statusWithReason(Status s) {
+std::string statusWithReason(Status status) {
   std::ostringstream oss;
-  oss << s;
-  std::string reason = reasonPhrase(s);
+  oss << status;
+  std::string reason = reasonPhrase(status);
   if (!reason.empty()) {
     oss << " " << reason;
   }
   return oss.str();
 }
 
-bool isSuccess(Status s) {
-  return s >= 200 && s <= 299;
+bool isSuccess(Status status) {
+  static const int kMinSuccess = 200;
+  static const int kMaxSuccess = 299;
+  return status >= kMinSuccess && status <= kMaxSuccess;
 }
 
-bool isRedirect(Status s) {
-  return s >= 300 && s <= 399;
+bool isRedirect(Status status) {
+  static const int kMinRedirect = 300;
+  static const int kMaxRedirect = 399;
+  return status >= kMinRedirect && status <= kMaxRedirect;
 }
 
-bool isClientError(Status s) {
-  return s >= 400 && s <= 499;
+bool isClientError(Status status) {
+  static const int kMinClientError = 400;
+  static const int kMaxClientError = 499;
+  return status >= kMinClientError && status <= kMaxClientError;
 }
 
-bool isServerError(Status s) {
-  return s >= 500 && s <= 505;
+bool isServerError(Status status) {
+  static const int kMinServerError = 500;
+  static const int kMaxServerError = 505;
+  return status >= kMinServerError && status <= kMaxServerError;
 }
 
 bool isValidStatusCode(int status) {

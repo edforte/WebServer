@@ -12,12 +12,12 @@ Logger::Logger(LogLevel level, const char* file, int line)
     : msgLevel_(level), file_(file), line_(line) {}
 
 Logger::~Logger() {
-  std::ostringstream o;
+  std::ostringstream oss;
   if (level_ == DEBUG) {
-    o << "(" << file_ << ":" << line_ << ")\t";
+    oss << "(" << file_ << ":" << line_ << ")\t";
   }
-  o << stream_.str();
-  Logger::log(msgLevel_, o.str());
+  oss << stream_.str();
+  Logger::log(msgLevel_, oss.str());
 }
 
 std::ostringstream& Logger::stream() {
@@ -31,9 +31,10 @@ void Logger::setLevel(LogLevel level) {
 }
 
 std::string Logger::getCurrentTime() {
+  static const size_t kTimeBufferSize = 32;
   time_t now = time(0);
   struct tm* timeinfo = localtime(&now);
-  char buffer[32];
+  char buffer[kTimeBufferSize];
   strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", timeinfo);
   return std::string(buffer);
 }
@@ -57,7 +58,7 @@ void Logger::log(LogLevel level, const std::string& message) {
   }
 
   std::cout << "[" << getCurrentTime() << "] [" << levelToString(level) << "]\t"
-            << message << std::endl;
+            << message << '\n';
 }
 
 void Logger::debug(const std::string& message) {
@@ -73,5 +74,5 @@ void Logger::error(const std::string& message) {
 }
 
 void Logger::printStartupLevel() {
-  std::cout << "Effective log level: " << levelToString(level_) << std::endl;
+  std::cout << "Effective log level: " << levelToString(level_) << '\n';
 }

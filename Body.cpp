@@ -1,8 +1,8 @@
 #include "Body.hpp"
 
-Body::Body() : data() {}
+Body::Body() {}
 
-Body::Body(const std::string& d) : data(d) {}
+Body::Body(const std::string& data_str) : data(data_str) {}
 
 Body::Body(const Body& other) : data(other.data) {}
 

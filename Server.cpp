@@ -18,13 +18,8 @@ Server::Server(void)
     : fd(-1),
       port(-1),
       host(INADDR_ANY),
-      allow_methods(),
-      index(),
       autoindex(false),
-      root(),
-      error_page(),
-      max_request_body(0),
-      locations() {
+      max_request_body(0) {
   LOG(DEBUG) << "Server() default constructor called";
   initDefaultHttpMethods(allow_methods);
   LOG(DEBUG) << "Server initialized with default allowed methods";
@@ -34,13 +29,8 @@ Server::Server(int port)
     : fd(-1),
       port(port),
       host(INADDR_ANY),
-      allow_methods(),
-      index(),
       autoindex(false),
-      root(),
-      error_page(),
-      max_request_body(0),
-      locations() {
+      max_request_body(0) {
   LOG(DEBUG) << "Server(port) constructor called with port: " << port;
   initDefaultHttpMethods(allow_methods);
   LOG(DEBUG) << "Server on port " << port
@@ -80,8 +70,10 @@ Server& Server::operator=(const Server& other) {
 }
 
 void Server::init(void) {
-  LOG(INFO) << "Initializing server on " << inet_ntoa(*(in_addr*)&host) << ":"
-            << port << "...";
+  in_addr host_addr = {};
+  host_addr.s_addr = host;
+  LOG(INFO) << "Initializing server on " << inet_ntoa(host_addr) << ":" << port
+            << "...";
 
   fd = socket(AF_INET, SOCK_STREAM, 0);
   if (fd < 0) {
@@ -99,20 +91,21 @@ void Server::init(void) {
   }
   LOG(DEBUG) << "SO_REUSEADDR option set on socket";
 
-  struct sockaddr_in addr;
+  struct sockaddr_in addr = {};
   std::memset(&addr, 0, sizeof(addr));
   addr.sin_family = AF_INET;
   /* bind to configured host (INADDR_ANY if not set) */
   addr.sin_addr.s_addr = host;
   addr.sin_port = htons(port);
 
-  if (bind(fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+  // Required for POSIX socket API
+  if (bind(fd, reinterpret_cast<struct sockaddr*>(&addr),  // NOLINT
+           sizeof(addr)) < 0) {
     disconnect();
     LOG_PERROR(ERROR, "bind");
     throw std::runtime_error("bind");
   }
-  LOG(DEBUG) << "Socket bound to " << inet_ntoa(*(in_addr*)&host) << ":"
-             << port;
+  LOG(DEBUG) << "Socket bound to " << inet_ntoa(host_addr) << ":" << port;
 
   if (listen(fd, MAX_CONNECTIONS_PER_SERVER) < 0) {
     disconnect();

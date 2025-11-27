@@ -2,7 +2,7 @@
 
 #include <sstream>
 
-RequestLine::RequestLine() : method(), uri(), version() {}
+RequestLine::RequestLine() {}
 
 RequestLine::RequestLine(const RequestLine& other)
     : method(other.method), uri(other.uri), version(other.version) {}
@@ -19,15 +19,12 @@ RequestLine& RequestLine::operator=(const RequestLine& other) {
 RequestLine::~RequestLine() {}
 
 std::string RequestLine::toString() const {
-  std::ostringstream o;
-  o << method << " " << uri << " " << version;
-  return o.str();
+  std::ostringstream output;
+  output << method << " " << uri << " " << version;
+  return output.str();
 }
 
 bool RequestLine::parse(const std::string& line) {
-  std::istringstream in(line);
-  if (!(in >> method >> uri >> version)) {
-    return false;
-  }
-  return true;
+  std::istringstream input(line);
+  return !!(input >> method >> uri >> version);
 }

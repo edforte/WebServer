@@ -17,6 +17,10 @@ class Logger {
   Logger(LogLevel level, const char* file, int line);
   ~Logger();
 
+  // Disable copying since this is a temporary RAII object
+  Logger(const Logger&);
+  Logger& operator=(const Logger&);
+
   std::ostringstream& stream();
 
  private:
@@ -48,4 +52,4 @@ class Logger {
 // It uses the normal LOG(...) temporary Logger so file/line are included
 // automatically by the Logger destructor.
 #define LOG_PERROR(level, msg) \
-  LOG(level) << msg << ": " << std::strerror(errno);
+  LOG(level) << (msg) << ": " << std::strerror(errno);

@@ -8,7 +8,7 @@
 class BlockNode {
  public:
   BlockNode();
-  BlockNode(const std::string& type, const std::string& param = "");
+  BlockNode(const std::string& type_str, const std::string& param_str = "");
   BlockNode(const BlockNode& other);
   BlockNode& operator=(const BlockNode& other);
   ~BlockNode();

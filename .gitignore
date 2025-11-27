@@ -23,3 +23,4 @@ Makefile.bak
 # GitHub Copilot
 _codeql_detected_source_root
 _codeql_build_dir/
+compile_commands.json

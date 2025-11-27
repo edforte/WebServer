@@ -4,7 +4,7 @@
 
 struct Body {
   Body();
-  explicit Body(const std::string& d);
+  explicit Body(const std::string& data_str);
   Body(const Body& other);
   Body& operator=(const Body& other);
   ~Body();

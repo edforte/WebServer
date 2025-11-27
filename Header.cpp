@@ -1,9 +1,9 @@
 #include "Header.hpp"
 
-Header::Header() : name(), value() {}
+Header::Header() {}
 
-Header::Header(const std::string& n, const std::string& v)
-    : name(n), value(v) {}
+Header::Header(const std::string& name_str, const std::string& value_str)
+    : name(name_str), value(value_str) {}
 
 Header::Header(const Header& other) : name(other.name), value(other.value) {}
 

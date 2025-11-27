@@ -4,8 +4,8 @@
 
 namespace http {
 
-std::string methodToString(Method m) {
-  switch (m) {
+std::string methodToString(Method method) {
+  switch (method) {
     case GET:
       return "GET";
     case POST:
@@ -21,23 +21,24 @@ std::string methodToString(Method m) {
   }
 }
 
-Method stringToMethod(const std::string& s) {
-  if (s == "GET") {
+Method stringToMethod(const std::string& method_str) {
+  if (method_str == "GET") {
     return GET;
   }
-  if (s == "POST") {
+  if (method_str == "POST") {
     return POST;
   }
-  if (s == "PUT") {
+  if (method_str == "PUT") {
     return PUT;
   }
-  if (s == "DELETE") {
+  if (method_str == "DELETE") {
     return DELETE;
   }
-  if (s == "HEAD") {
+  if (method_str == "HEAD") {
     return HEAD;
   }
-  throw std::invalid_argument(std::string("Unknown HTTP method: ") + s);
+  throw std::invalid_argument(std::string("Unknown HTTP method: ") +
+                              method_str);
 }
 
 }  // namespace http

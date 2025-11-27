@@ -11,30 +11,32 @@
 #include "Logger.hpp"
 #include "constants.hpp"
 
-int set_nonblocking(int fd) {
-  int flags = fcntl(fd, F_GETFL, 0);
+int set_nonblocking(int file_descriptor) {
+  int flags = fcntl(file_descriptor, F_GETFL, 0);
   if (flags < 0) {
     return -1;
   }
-  return fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+  return fcntl(file_descriptor, F_SETFL, flags | O_NONBLOCK);
 }
 
 // Trim whitespace from both ends of a string and return the trimmed copy.
-std::string trim_copy(const std::string& s) {
-  std::string res = s;
+std::string trim_copy(const std::string& str) {
+  std::string res = str;
   // left trim
-  std::string::size_type i = 0;
-  while (i < res.size() && std::isspace(static_cast<unsigned char>(res[i]))) {
-    ++i;
+  std::string::size_type idx = 0;
+  while (idx < res.size() &&
+         (std::isspace(static_cast<unsigned char>(res[idx])) != 0)) {
+    ++idx;
   }
-  res.erase(0, i);
+  res.erase(0, idx);
   // right trim
   if (!res.empty()) {
-    std::string::size_type j = res.size() - 1;
-    while (j > 0 && std::isspace(static_cast<unsigned char>(res[j]))) {
-      --j;
+    std::string::size_type jdx = res.size() - 1;
+    while (jdx > 0 &&
+           (std::isspace(static_cast<unsigned char>(res[jdx])) != 0)) {
+      --jdx;
     }
-    res.erase(j + 1);
+    res.erase(jdx + 1);
   }
   return res;
 }

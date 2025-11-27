@@ -33,7 +33,7 @@ class ServerManager {
   int run();
 
   // Updates epoll events for a file descriptor
-  void updateEvents(int fd, u_int32_t events);
+  void updateEvents(int file_descriptor, u_int32_t events) const;
 
   void setupSignalHandlers();
 

@@ -10,7 +10,7 @@
 class Location {
  public:
   Location();
-  Location(const std::string& path);
+  Location(const std::string& path_str);
   Location(const Location& other);
   Location& operator=(const Location& other);
   ~Location();
