@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:webserv:config-schema",
+  "title": "webserv Configuration Schema",
+  "description": "Schema describing the configuration structure for the webserv HTTP server. Note: The actual configuration uses nginx-like syntax, this schema documents the logical structure.",
+  "type": "object",
+  "properties": {
+    "max_request_body": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum allowed size of the client request body in bytes (global default)"
+    },
+    "error_page": {
+      "$ref": "#/definitions/errorPageMapping",
+      "description": "Mapping of HTTP error status codes to error page URIs (global defaults)"
+    },
+    "servers": {
+      "type": "array",
+      "description": "List of server (virtual host) configurations",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/server"
+      }
+    }
+  },
+  "required": ["servers"],
+  "definitions": {
+    "errorStatusCodePattern": {
+      "description": "Pattern matching HTTP 4xx and 5xx status codes",
+      "pattern": "^(4[0-9]{2}|5[0-9]{2})$"
+    },
+    "errorPageMapping": {
+      "type": "object",
+      "description": "Mapping of HTTP error status codes to error page URIs",
+      "additionalProperties": {
+        "type": "string",
+        "description": "URI path to the error page"
+      },
+      "propertyNames": {
+        "$ref": "#/definitions/errorStatusCodePattern"
+      }
+    },
+    "redirectCode": {
+      "type": "integer",
+      "enum": [301, 302, 303, 307, 308],
+      "description": "HTTP redirect status code (301=Moved Permanently, 302=Found, 303=See Other, 307=Temporary Redirect, 308=Permanent Redirect)"
+    },
+    "server": {
+      "type": "object",
+      "description": "A server block defines a virtual host configuration",
+      "properties": {
+        "listen": {
+          "type": "object",
+          "description": "Address and port on which the server accepts requests",
+          "properties": {
+            "host": {
+              "type": "string",
+              "description": "IP address to bind to (optional, defaults to 0.0.0.0)",
+              "default": "0.0.0.0",
+              "examples": ["127.0.0.1", "0.0.0.0", "192.168.1.1"]
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535,
+              "description": "Port number to listen on"
+            }
+          },
+          "required": ["port"]
+        },
+        "root": {
+          "type": "string",
+          "description": "Root directory for serving files",
+          "examples": ["./www", "/var/www/html"]
+        },
+        "index": {
+          "type": "string",
+          "description": "Default index file name",
+          "examples": ["index.html", "index.htm"]
+        },
+        "autoindex": {
+          "type": "boolean",
+          "description": "Enable directory listing when no index file is found",
+          "default": false
+        },
+        "allow_methods": {
+          "type": "array",
+          "description": "List of allowed HTTP methods",
+          "items": {
+            "$ref": "#/definitions/httpMethod"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "error_page": {
+          "$ref": "#/definitions/errorPageMapping"
+        },
+        "max_request_body": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum allowed size of the client request body in bytes"
+        },
+        "locations": {
+          "type": "object",
+          "description": "URI path to location configuration mapping",
+          "additionalProperties": {
+            "$ref": "#/definitions/location"
+          }
+        }
+      },
+      "required": ["listen", "root"]
+    },
+    "location": {
+      "type": "object",
+      "description": "A location block defines URI-specific configuration",
+      "properties": {
+        "root": {
+          "type": "string",
+          "description": "Override root directory for this location"
+        },
+        "index": {
+          "type": "string",
+          "description": "Override index file for this location"
+        },
+        "autoindex": {
+          "type": "boolean",
+          "description": "Override directory listing setting for this location"
+        },
+        "allow_methods": {
+          "type": "array",
+          "description": "Override allowed HTTP methods for this location",
+          "items": {
+            "$ref": "#/definitions/httpMethod"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "redirect": {
+          "type": "object",
+          "description": "Configure HTTP redirect for this location",
+          "properties": {
+            "code": {
+              "$ref": "#/definitions/redirectCode"
+            },
+            "url": {
+              "type": "string",
+              "description": "Target URL for the redirect"
+            }
+          },
+          "required": ["code", "url"]
+        },
+        "cgi": {
+          "type": "boolean",
+          "description": "Enable CGI script execution for this location",
+          "default": false
+        },
+        "error_page": {
+          "$ref": "#/definitions/errorPageMapping",
+          "description": "Override error pages for this location"
+        }
+      }
+    },
+    "httpMethod": {
+      "type": "string",
+      "enum": ["GET", "POST", "PUT", "DELETE", "HEAD"],
+      "description": "HTTP request method"
+    }
+  }
+}

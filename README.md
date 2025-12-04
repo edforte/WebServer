@@ -59,6 +59,8 @@ make fclean # Remove all generated files
 make re     # Rebuild from scratch
 ```
 
+For detailed configuration documentation, see [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
+
 ### Regenerating the Makefile
 
 The Makefile is generated from `CMakeLists.txt` using the `generate-makefile` target. Automatic regeneration is supported when CMake is present.
