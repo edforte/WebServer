@@ -79,7 +79,8 @@ HandlerResult FileHandler::handleGet(Connection& conn) {
 
   off_t out_start = 0, out_end = 0;
   int r = file_utils::prepareFileResponse(path_, rangePtr, conn.response, fi_,
-                                          out_start, out_end);
+                                          out_start, out_end,
+                                          conn.getHttpVersion());
   if (r == -1) {
     conn.prepareErrorResponse(http::S_404_NOT_FOUND);
     return HR_DONE;
@@ -120,7 +121,7 @@ HandlerResult FileHandler::handleHead(Connection& conn) {
   }
 
   int r = file_utils::prepareFileResponse(path_, rangePtr, conn.response, fi,
-                                          start, end);
+                                          start, end, conn.getHttpVersion());
 
   if (r == -1) {
     conn.prepareErrorResponse(http::S_404_NOT_FOUND);
@@ -152,7 +153,7 @@ HandlerResult FileHandler::handleHead(Connection& conn) {
 
 HandlerResult FileHandler::handlePost(Connection& conn) {
   // Simple POST implementation: echo back the POST data with success message
-  conn.response.status_line.version = HTTP_VERSION;
+  conn.response.status_line.version = conn.getHttpVersion();
   conn.response.status_line.status_code = http::S_201_CREATED;
   conn.response.status_line.reason = http::reasonPhrase(http::S_201_CREATED);
 
@@ -215,7 +216,7 @@ HandlerResult FileHandler::handlePut(Connection& conn) {
     return HR_DONE;
   }
 
-  conn.response.status_line.version = HTTP_VERSION;
+  conn.response.status_line.version = conn.getHttpVersion();
   if (created) {
     conn.response.status_line.status_code = http::S_201_CREATED;
     conn.response.status_line.reason = http::reasonPhrase(http::S_201_CREATED);
@@ -256,7 +257,7 @@ HandlerResult FileHandler::handleDelete(Connection& conn) {
   }
 
   // 204 No Content is the standard response for successful DELETE
-  conn.response.status_line.version = HTTP_VERSION;
+  conn.response.status_line.version = conn.getHttpVersion();
   conn.response.status_line.status_code = http::S_204_NO_CONTENT;
   conn.response.status_line.reason = http::reasonPhrase(http::S_204_NO_CONTENT);
 

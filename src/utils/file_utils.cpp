@@ -187,7 +187,8 @@ bool parseRange(const std::string& rangeHeader, off_t file_size,
 
 int prepareFileResponse(const std::string& path, const std::string* rangeHeader,
                         ::Response& outResponse, FileInfo& outFile,
-                        off_t& out_start, off_t& out_end) {
+                        off_t& out_start, off_t& out_end,
+                        const std::string& httpVersion) {
   outFile.fd = -1;
   outFile.size = 0;
   outFile.content_type.clear();
@@ -229,7 +230,7 @@ int prepareFileResponse(const std::string& path, const std::string* rangeHeader,
   }
 
   if (is_partial) {
-    outResponse.status_line.version = HTTP_VERSION;
+    outResponse.status_line.version = httpVersion;
     outResponse.status_line.status_code = http::S_206_PARTIAL_CONTENT;
     outResponse.status_line.reason =
         http::reasonPhrase(http::S_206_PARTIAL_CONTENT);
@@ -243,7 +244,7 @@ int prepareFileResponse(const std::string& path, const std::string* rangeHeader,
     cr << "bytes " << out_start << "-" << out_end << "/" << file_size;
     outResponse.addHeader("Content-Range", cr.str());
   } else {
-    outResponse.status_line.version = HTTP_VERSION;
+    outResponse.status_line.version = httpVersion;
     outResponse.status_line.status_code = http::S_200_OK;
     outResponse.status_line.reason = http::reasonPhrase(http::S_200_OK);
     {

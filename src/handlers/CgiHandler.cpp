@@ -240,7 +240,7 @@ HandlerResult CgiHandler::readCgiOutput(Connection& conn) {
 
   // Ensure we have response headers if none were parsed
   if (!headers_parsed_) {
-    conn.response.status_line.version = HTTP_VERSION;
+    conn.response.status_line.version = conn.getHttpVersion();
     conn.response.status_line.status_code = http::S_200_OK;
     conn.response.status_line.reason = "OK";
     conn.response.addHeader("Content-Type", "text/plain");
@@ -280,7 +280,7 @@ HandlerResult CgiHandler::parseOutput(Connection& conn,
     std::string body_part = remaining_data_.substr(headers_end + separator_len);
 
     // Set default status
-    conn.response.status_line.version = HTTP_VERSION;
+    conn.response.status_line.version = conn.getHttpVersion();
     conn.response.status_line.status_code = http::S_200_OK;
     conn.response.status_line.reason = "OK";
 

@@ -143,8 +143,16 @@ int Connection::handleWrite() {
   return 0;
 }
 
+std::string Connection::getHttpVersion() const {
+  if (request.request_line.version == "HTTP/1.0" ||
+      request.request_line.version == "HTTP/1.1") {
+    return request.request_line.version;
+  }
+  return HTTP_VERSION;
+}
+
 void Connection::prepareErrorResponse(http::Status status) {
-  response.status_line.version = HTTP_VERSION;
+  response.status_line.version = getHttpVersion();
   response.status_line.status_code = status;
   response.status_line.reason = http::reasonPhrase(status);
 
@@ -325,8 +333,9 @@ void Connection::processResponse(const Location& location) {
 }
 
 http::Status Connection::validateRequestForLocation(const Location& location) {
-  // 1. Check HTTP protocol version
-  if (request.request_line.version != HTTP_VERSION) {
+  // 1. Check HTTP protocol version (accept both HTTP/1.0 and HTTP/1.1)
+  if (request.request_line.version != "HTTP/1.0" &&
+      request.request_line.version != "HTTP/1.1") {
     LOG(INFO) << "Unsupported HTTP version: " << request.request_line.version;
     return http::S_505_HTTP_VERSION_NOT_SUPPORTED;
   }

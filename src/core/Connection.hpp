@@ -35,6 +35,8 @@ class Connection {
   void processRequest(const class Server& server);
   void processResponse(const class Location& location);
   void prepareErrorResponse(http::Status status);
+  // Get the HTTP version from request, defaulting to HTTP/1.1 if not set
+  std::string getHttpVersion() const;
   // Validate request version and method for a given location.
   // Returns http::S_0_UNKNOWN on success, or an http::Status code to send.
   http::Status validateRequestForLocation(const class Location& location);
