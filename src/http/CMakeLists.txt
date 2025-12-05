@@ -1,6 +1,7 @@
 set(HTTP_SOURCES
   Body.cpp
   Header.cpp
+  http_utils.cpp
   HttpMethod.cpp
   HttpStatus.cpp
   Message.cpp
@@ -8,6 +9,7 @@ set(HTTP_SOURCES
   RequestLine.cpp
   Response.cpp
   StatusLine.cpp
+  Uri.cpp
 )
 
 foreach(f IN LISTS HTTP_SOURCES)

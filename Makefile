@@ -9,6 +9,7 @@ RM ?= rm -f
 NAME	:=	webserv
 SOURCES	:=	src/http/Body.cpp \
 			src/http/Header.cpp \
+			src/http/http_utils.cpp \
 			src/http/HttpMethod.cpp \
 			src/http/HttpStatus.cpp \
 			src/http/Message.cpp \
@@ -16,6 +17,7 @@ SOURCES	:=	src/http/Body.cpp \
 			src/http/RequestLine.cpp \
 			src/http/Response.cpp \
 			src/http/StatusLine.cpp \
+			src/http/Uri.cpp \
 			src/utils/file_utils.cpp \
 			src/utils/Logger.cpp \
 			src/utils/utils.cpp \

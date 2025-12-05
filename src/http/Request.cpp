@@ -1,14 +1,15 @@
 #include "Request.hpp"
 
-Request::Request() : Message(), request_line() {}
+Request::Request() : Message(), request_line(), uri() {}
 
 Request::Request(const Request& other)
-    : Message(other), request_line(other.request_line) {}
+    : Message(other), request_line(other.request_line), uri(other.uri) {}
 
 Request& Request::operator=(const Request& other) {
   if (this != &other) {
     Message::operator=(other);
     request_line = other.request_line;
+    uri = other.uri;
   }
   return *this;
 }
@@ -50,6 +51,10 @@ bool Request::parseStartAndHeaders(const std::string& buffer,
   if (!request_line.parse(lines[0])) {
     return false;
   }
+
+  // Parse the URI from the request line
+  uri.parse(request_line.uri);
+
   parseHeaders(lines, 1);
   return true;
 }
